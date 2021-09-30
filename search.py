@@ -25,18 +25,17 @@ class Node:
 
 
 #declare the tree
-nodeS = Node(state="S")
-
-nodeA = Node(state="A", pathCost=[3], parent=[nodeS, None, None])
-nodeB = Node(state="B", pathCost=[1], parent=[nodeS, None, None])
-nodeC = Node(state="C", pathCost=[8], parent=[nodeS, None, None])
+nodeS = Node(state='S')
+nodeA = Node(state='A', pathCost=[3], parent=[nodeS, None, None])
+nodeB = Node(state='B', pathCost=[1], parent=[nodeS, None, None])
+nodeC = Node(state='C', pathCost=[8], parent=[nodeS, None, None])
 
 nodeS.children=[nodeA,nodeB,nodeC] #add children seperately
 
 
-nodeD = Node(state="D", pathCost=[3], parent=[nodeA, None, None])
-nodeE = Node(state="E", pathCost=[7], parent=[nodeA, None, None])
-nodeG = Node(state="G", pathCost=[15, 20, 5], parent=[nodeA,nodeB,nodeC])
+nodeD = Node(state='D', pathCost=[3], parent=[nodeA, None, None])
+nodeE = Node(state='E', pathCost=[7], parent=[nodeA, None, None])
+nodeG = Node(state='G', pathCost=[15, 20, 5], parent=[nodeA,nodeB,nodeC])
 
 nodeA.children=[nodeD,nodeE,nodeG]
 nodeB.children=[nodeG, None, None]
@@ -54,15 +53,36 @@ nodeC.children=[nodeG, None, None]
 #Time complexity: O(bm)
 
 def depthFirstSearch( tree, cost = 0 ):
-    #stack = []
+    stack = []
     print("State: ",tree.state) #for testing
     if tree.state == 'G': #if we found the goal, return cost
         return cost;
     else:
         if (tree.children): #make sure we arent at a leaf node
-            for i in range (0,2) : #loop through the list of children
+            for i in range (2,0) : #loop through the list of children
                 if(tree.children[i]): #if child is not null, otherwise go to next
-                    cost += tree.children[i].pathCost[i]
-                    depthFirstSearch(tree.children[i], cost)
+                    stack.append(tree.children[i]) #append all current children to the stack
 
-print(depthFirstSearch(nodeS))
+            cost += tree.children[0].pathCost[0]
+            depthFirstSearch(tree.children[0], cost)
+            stack.remove(tree.children[0])
+
+def breadthFirstSearch( tree, queue = [] ):
+    #queue = []
+    #print("State; ",tree.state)
+    #print(tree.state, " state is",tree.state == 'G')
+    if(tree.state == 'G'):
+        print("Found!")
+        return
+    if(tree.state != 'G'):
+        if (tree.children): # if my tree has children, expand the nodes and add to queue
+            for x in tree.children:
+                if(x and x not in queue):
+                    queue.append(x)
+        if queue:
+        #for _ in queue: #iterate through queue
+            node = queue.pop(0) #we always pop the first value off the queue
+            print(node.state, " popped")
+            breadthFirstSearch(node, queue)
+
+breadthFirstSearch(nodeS)
